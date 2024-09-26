@@ -19,7 +19,7 @@ public class CalculaNominas {
             Empleado empleadoIndividual = new Empleado("Guadalupe Martín", "28635397F", 'F');
             altaEmpleado(empleadoIndividual);
 
-            // Dar de alta empleados a partir de un fichero
+            // Dar de alta empleados a partir de un fichero (este fichero debe crearse)
             altaEmpleado("empleadosNuevos.txt");
 
             // Menú en el que el usuario escoge una opción
@@ -200,36 +200,36 @@ public class CalculaNominas {
 
     // Pide DNI y se puede modificar (opcionalmente) los datos de un empleado
     private static void modificarDatosEmpleado(String dni) {
+        Scanner scanner = new Scanner(System.in);
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT * FROM empleados WHERE dni = ?")) {
-
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM empleados WHERE dni = ?")) { // try-with-resources para Scanner
+    
             ps.setString(1, dni);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Scanner scanner = new Scanner(System.in);
-
+    
                     System.out.println("Empleado actual:");
                     System.out.println("Nombre: " + rs.getString("nombre"));
                     System.out.println("Sexo: " + rs.getString("sexo"));
                     System.out.println("Categoría: " + rs.getInt("categoria"));
                     System.out.println("Años: " + rs.getInt("anyos"));
-
+    
                     System.out.print("Nuevo nombre (enter para mantener): ");
                     String nuevoNombre = scanner.nextLine();
                     nuevoNombre = nuevoNombre.isEmpty() ? rs.getString("nombre") : nuevoNombre;
-
+    
                     System.out.print("Nuevo sexo (M/F, enter para mantener): ");
                     String nuevoSexo = scanner.nextLine();
                     nuevoSexo = nuevoSexo.isEmpty() ? rs.getString("sexo") : nuevoSexo;
-
+    
                     System.out.print("Nueva categoría (enter para mantener): ");
                     String nuevaCategoriaStr = scanner.nextLine();
                     int nuevaCategoria = nuevaCategoriaStr.isEmpty() ? rs.getInt("categoria") : Integer.parseInt(nuevaCategoriaStr);
-
+    
                     System.out.print("Nuevos años (enter para mantener): ");
                     String nuevosAnyosStr = scanner.nextLine();
                     int nuevosAnyos = nuevosAnyosStr.isEmpty() ? rs.getInt("anyos") : Integer.parseInt(nuevosAnyosStr);
-
+    
                     // Actualizar los datos del empleado
                     PreparedStatement updatePs = conn.prepareStatement(
                         "UPDATE empleados SET nombre = ?, sexo = ?, categoria = ?, anyos = ? WHERE dni = ?"
@@ -240,19 +240,20 @@ public class CalculaNominas {
                     updatePs.setInt(4, nuevosAnyos);
                     updatePs.setString(5, dni);
                     updatePs.executeUpdate();
-
+    
                     // Recalcular el sueldo del empleado después de la actualización
                     recalcularYActualizarSueldo(dni);
-
+    
                 } else {
                     System.out.println("No se encontró el empleado con el DNI proporcionado.");
                 }
             }
-
+    
         } catch (SQLException e) {
             System.out.println("Error al modificar los datos del empleado: " + e.getMessage());
         }
     }
+    
 
     // Actualiza el salario de un empleado si hay cambios en la categoría o años trabajados
     private static void recalcularYActualizarSueldo(String dni) {
