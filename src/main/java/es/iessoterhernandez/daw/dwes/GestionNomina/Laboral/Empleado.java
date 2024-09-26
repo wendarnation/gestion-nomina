@@ -63,6 +63,7 @@ public class Empleado extends Persona {
 		this.anyos++;
 	}
 	
+	// Imprime los datos del empleado
 	public void imprime() {
 		super.imprime(); 
 		System.out.println(super.sexo + ", " + categoria + ", " + anyos);
