@@ -1,0 +1,9 @@
+nombre: Juanito Peña
+dni: 32000036G
+sexo: M
+categoria: 4
+anyos: 7
+
+nombre: Pepita López
+dni: 32000039G
+sexo: F
