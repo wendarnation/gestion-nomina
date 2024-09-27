@@ -1,7 +1,5 @@
 package es.iessoterhernandez.daw.dwes.GestionNomina.Laboral;
 
-// Clase Persona
-
 public class Persona {
 
 	public String nombre, dni;
